@@ -38,9 +38,13 @@ def get_stock_data(tickers, start, end):
     for name, ticker in tickers.items():
         try:
             # 주가 데이터 가져오기 (종가 기준)
-            df = yf.download(ticker, start=start, end=end)
-            if not df.empty:
+            # auto_adjust=False를 추가하여 'Adj Close' 컬럼을 명시적으로 가져오도록 함
+            df = yf.download(ticker, start=start, end=end, auto_adjust=False)
+            if not df.empty and 'Adj Close' in df.columns: # 'Adj Close' 컬럼이 존재하는지 다시 확인
                 data[name] = df['Adj Close']
+            elif not df.empty and 'Close' in df.columns: # 'Adj Close'가 없으면 'Close'라도 시도 (fallback)
+                st.warning(f"경고: {name} ({ticker}) 의 'Adj Close' 데이터를 찾을 수 없어 'Close' 데이터를 사용합니다.")
+                data[name] = df['Close']
             else:
                 st.warning(f"경고: {name} ({ticker}) 의 주가 데이터를 가져오지 못했습니다. 이 기업은 시각화에서 제외됩니다.")
         except Exception as e:
