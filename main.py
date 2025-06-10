@@ -2,7 +2,7 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 
-# 관광지 정보 데이터 (이 부분은 동일합니다)
+# 관광지 정보 데이터
 tourist_data = {
     "도쿄 - 도쿄타워": {
         "lat": 35.6586,
@@ -11,7 +11,7 @@ tourist_data = {
         "food": ["스시잔마이 도쿄본점 🍣", "잇푸도 라멘 시바 공원점 🍜", "텐야 텐푸라 ⛩️"],
         "hotels": ["더 프린스 파크타워 도쿄 🏨", "ANA 인터컨티넨탈 도쿄 🌟", "신주쿠 워싱턴 호텔 📍"],
         "transport": "하마마츠초역 또는 아카바네바시역에서 도보 5~10분 거리입니다.",
-        "youtube": "https://www.youtube.com/watch?v=A2WdJqK-fec", # 실제 유튜브 링크로 변경했습니다.
+        "youtube": "https://www.youtube.com/watch?v=YOUR_TOKYO_TOWER_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
         "link": "https://www.tokyotower.co.jp/"
     },
     "교토 - 기요미즈데라(청수사)": {
@@ -21,7 +21,7 @@ tourist_data = {
         "food": ["기온 스이렌 가이세키 요리 🍱", "야사카만주 찻집 🍡", "이치란 라멘 🍜"],
         "hotels": ["교토 호텔 오쿠라 🏯", "기온 하나레 료칸 ✨", "호텔 그랑비아 교토 🚅"],
         "transport": "기온시조역 또는 기요미즈고조역에서 도보 10~15분 거리입니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_KYOMIZUDERA_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=YOUR_KIYOMIZUDERA_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
         "link": "https://www.kiyomizudera.or.jp/"
     },
     "오사카 - 오사카성": {
@@ -31,7 +31,7 @@ tourist_data = {
         "food": ["다루마 꼬치튀김 🍢", "미즈노 오코노미야키 🍳", "이치란 라멘 난바점 🍜"],
         "hotels": ["호텔 뉴 오타니 오사카 🏨", "스위소텔 난카이 오사카 💼", "도톤보리 호텔 🎭"],
         "transport": "오사카 비즈니스 파크역에서 도보 10분 거리입니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_OSAKACASTLE_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=YOUR_OSAKA_CASTLE_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
         "link": "https://www.osakacastle.net/"
     },
     "히로시마 - 원폭 돔": {
@@ -41,7 +41,7 @@ tourist_data = {
         "food": ["오코노미무라 히로시마풍 오코노미야키 🍳", "이쿠로 라멘 🍜", "카페 폰토 🌸"],
         "hotels": ["리버사이드 호텔 히로시마 🏨", "호텔 그란비아 히로시마 🚄", "ANA 크라운 플라자 히로시마 🌟"],
         "transport": "히로시마역에서 노면전차(덴샤)를 타고 '겐바쿠 돔마에'에서 하차합니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_ATOMICBOMBDOME_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=YOUR_ATOMIC_DOME_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
         "link": "https://hpmmuseum.jp/?lang=en"
     },
     "삿포로 - 오도리 공원": {
@@ -61,22 +61,16 @@ st.set_page_config(page_title="일본 관광 가이드", layout="wide")
 st.title("🇯🇵 일본 주요 관광지 가이드")
 st.markdown("관광지를 선택하면 소개 정보, 유튜브 영상, 지도, 맛집, 호텔, 교통 안내 및 공식 사이트 링크가 표시됩니다.")
 
-# ---
-## 📌 세션 상태(Session State)를 사용하여 선택 유지
-
-`st.session_state`를 사용하여 선택된 관광지 정보를 저장하고 관리합니다.
-
-```python
+# 세션 상태(Session State) 초기화 및 사용
 if "selected_spot" not in st.session_state:
     st.session_state.selected_spot = None
 
 cols = st.columns(3)
 for idx, spot in enumerate(tourist_data.keys()):
-    # 버튼 클릭 시 세션 상태에 선택된 관광지 이름을 저장합니다.
-    if cols[idx % 3].button(spot, key=spot): # key 인자를 추가하여 각 버튼을 고유하게 식별합니다.
+    if cols[idx % 3].button(spot, key=spot):
         st.session_state.selected_spot = spot
 
-# 선택된 관광지 정보 출력 (세션 상태의 값을 사용합니다)
+# 선택된 관광지 정보 출력
 if st.session_state.selected_spot:
     selected = st.session_state.selected_spot
     data = tourist_data[selected]
@@ -86,11 +80,9 @@ if st.session_state.selected_spot:
     # 공식 사이트
     st.markdown(f"[🌐 공식 사이트 바로가기]({data['link']})")
 
-    # YouTube 영상 (유효한 유튜브 링크로 변경했습니다)
+    # YouTube 영상
     st.subheader("🎥 소개 영상")
-    # your_youtube_video_id 부분을 실제 YouTube 영상 ID로 바꿔주세요.
-    # 예: [https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=dQw4w9WgXcQ) 에서 dQw4w9WgXcQ가 ID입니다.
-    # 제공된 URL에 [youtube.com/0과](https://youtube.com/0과) 같이 되어 있어서 예시로 교체했습니다.
+    # 실제 유튜브 영상 ID 부분을 정확한 링크로 변경해주세요.
     st.video(data["youtube"])
 
     # 지도
