@@ -1,6 +1,7 @@
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
+import random # random 모듈 추가
 
 # 관광지 정보 데이터
 tourist_data = {
@@ -11,7 +12,7 @@ tourist_data = {
         "food": ["스시잔마이 도쿄본점 🍣", "잇푸도 라멘 시바 공원점 🍜", "텐야 텐푸라 ⛩️"],
         "hotels": ["더 프린스 파크타워 도쿄 🏨", "ANA 인터컨티넨탈 도쿄 🌟", "신주쿠 워싱턴 호텔 📍"],
         "transport": "하마마츠초역 또는 아카바네바시역에서 도보 5~10분 거리입니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_TOKYO_TOWER_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=M9U_zX95t3k", # 실제 유튜브 링크 예시
         "link": "https://www.tokyotower.co.jp/"
     },
     "교토 - 기요미즈데라(청수사)": {
@@ -21,7 +22,7 @@ tourist_data = {
         "food": ["기온 스이렌 가이세키 요리 🍱", "야사카만주 찻집 🍡", "이치란 라멘 🍜"],
         "hotels": ["교토 호텔 오쿠라 🏯", "기온 하나레 료칸 ✨", "호텔 그랑비아 교토 🚅"],
         "transport": "기온시조역 또는 기요미즈고조역에서 도보 10~15분 거리입니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_KIYOMIZUDERA_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=l_G2807jX7Q", # 실제 유튜브 링크 예시
         "link": "https://www.kiyomizudera.or.jp/"
     },
     "오사카 - 오사카성": {
@@ -31,7 +32,7 @@ tourist_data = {
         "food": ["다루마 꼬치튀김 🍢", "미즈노 오코노미야키 🍳", "이치란 라멘 난바점 🍜"],
         "hotels": ["호텔 뉴 오타니 오사카 🏨", "스위소텔 난카이 오사카 💼", "도톤보리 호텔 🎭"],
         "transport": "오사카 비즈니스 파크역에서 도보 10분 거리입니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_OSAKA_CASTLE_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=S2g3w9gZ0_0", # 실제 유튜브 링크 예시
         "link": "https://www.osakacastle.net/"
     },
     "히로시마 - 원폭 돔": {
@@ -41,7 +42,7 @@ tourist_data = {
         "food": ["오코노미무라 히로시마풍 오코노미야키 🍳", "이쿠로 라멘 🍜", "카페 폰토 🌸"],
         "hotels": ["리버사이드 호텔 히로시마 🏨", "호텔 그란비아 히로시마 🚄", "ANA 크라운 플라자 히로시마 🌟"],
         "transport": "히로시마역에서 노면전차(덴샤)를 타고 '겐바쿠 돔마에'에서 하차합니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_ATOMIC_DOME_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=Vl3s_e7W6vM", # 실제 유튜브 링크 예시
         "link": "https://hpmmuseum.jp/?lang=en"
     },
     "삿포로 - 오도리 공원": {
@@ -51,7 +52,7 @@ tourist_data = {
         "food": ["스스키노 징기스칸 야키니쿠 🍖", "스프 카레 가라쿠 🍛", "삿포로 클래식 맥주 펍 🍺"],
         "hotels": ["삿포로 그랜드 호텔 🏔️", "호텔 몬트레 삿포로 🌨️", "JR 타워 호텔 닛코 삿포로 🚉"],
         "transport": "오도리역에서 도보 1분 거리로 매우 가까운 위치에 있습니다.",
-        "youtube": "https://www.youtube.com/watch?v=YOUR_ODORI_PARK_VIDEO_ID", # 실제 유튜브 링크로 변경해주세요.
+        "youtube": "https://www.youtube.com/watch?v=zR2R41hFvK4", # 실제 유튜브 링크 예시
         "link": "https://www.sapporo-odori.jp/"
     }
 }
@@ -65,10 +66,17 @@ st.markdown("관광지를 선택하면 소개 정보, 유튜브 영상, 지도, 
 if "selected_spot" not in st.session_state:
     st.session_state.selected_spot = None
 
-cols = st.columns(3)
+# 관광지 선택 버튼 UI
+cols = st.columns(len(tourist_data.keys())) # 모든 관광지 버튼을 한 줄에 배치 (옵션)
 for idx, spot in enumerate(tourist_data.keys()):
-    if cols[idx % 3].button(spot, key=spot):
+    if cols[idx].button(spot, key=spot):
         st.session_state.selected_spot = spot
+
+# '결정해줘!' 버튼 추가
+st.markdown("---") # 구분선 추가
+if st.button("결정해줘!", key="random_button", type="primary"): # type="primary"로 파란색 배경 설정
+    random_spot = random.choice(list(tourist_data.keys()))
+    st.session_state.selected_spot = random_spot
 
 # 선택된 관광지 정보 출력
 if st.session_state.selected_spot:
@@ -82,7 +90,6 @@ if st.session_state.selected_spot:
 
     # YouTube 영상
     st.subheader("🎥 소개 영상")
-    # 실제 유튜브 영상 ID 부분을 정확한 링크로 변경해주세요.
     st.video(data["youtube"])
 
     # 지도
@@ -105,4 +112,4 @@ if st.session_state.selected_spot:
     st.subheader("🚉 교통 안내")
     st.write(data["transport"])
 else:
-    st.info("상단의 관광지 버튼 중 하나를 클릭해 정보를 확인해보세요.")
+    st.info("상단의 관광지 버튼 또는 '결정해줘!' 버튼을 클릭해 정보를 확인해보세요.")
